@@ -135,7 +135,7 @@ function gaugeChart (value) {
         type: "indicator",
         mode: "gauge+number",
         value: value,
-        title: { text: "Scrubs Per Week", font: { size: 18 } },
+        title: { text: "Scrubs Per Week", font: { size: 16 } },
         delta: { reference: 400, increasing: { color: "RebeccaPurple" } },
         gauge: {
             axis: { range: [null, 10]},
