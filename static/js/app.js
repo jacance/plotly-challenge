@@ -7,9 +7,11 @@ function buildAllcharts (id) {
     d3.json(url).then((raw) => {
         // Sample values
         console.log(raw)
-
-        data = raw.samples.filter(d => d.id === id)
-        demoData = raw.metadata.filter(d => d.id == id)
+        
+        // All samples for plots
+        var data = raw.samples.filter(d => d.id === id)
+        // Metadata for demographic info
+        var demoData = raw.metadata.filter(d => d.id == id)
         console.log(demoData)
 
         // Slice 10 sampleValues for bar chart
@@ -21,14 +23,14 @@ function buildAllcharts (id) {
         // Slice 10 otuLabels for plots
         var otuLabels = data.map(x=>x.otu_labels.slice(0,10))[0];
 
-        
-        var ylabels = []
-
         // Convert OTU IDs to string
-        for (let i =0; i < otuIds.length; i++) {
-            otuString = otuIds[i].toString()
+        var ylabels = []
+        otuIds.forEach((each, i) => {
+            var otuString = otuIds[i].toString()
+            // Push OTU IDs into empty ylabels array as string for plotting
             ylabels.push(`OTU ${otuString}`)
-        }
+            console.log(each)
+        });
 
         // Sample values for bubble chart
         var sampleValuesAll = data.map(x => x.sample_values)[0];
@@ -39,7 +41,7 @@ function buildAllcharts (id) {
         // otuLabels for bubble chart
         var otuLabelsAll = data.map(x=>x.otu_labels)[0]
 
-
+        // Washing frequency or scrubs per week
         var washFreq = demoData.map(x=>x.wfreq)[0]
 
 
@@ -150,7 +152,7 @@ function gaugeChart (value) {
             axis: { range: [null, 10]},
             bar: { color: "darkred" },
             bgcolor: "white",
-            borderwidth: 2,
+            borderwidth: 1,
             bordercolor: "gray",
             steps: [
             { range: [0, 1], color: "#FBFBEF" },
