@@ -1,4 +1,4 @@
-const url = "../samples.json";
+const url = "https://jacance.github.io/plotly-challenge/samples.json";
 
 // Default function to be shown
 function buildAllcharts (id) {
