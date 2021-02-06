@@ -31,20 +31,20 @@ function buildAllcharts (id) {
         }
 
         // Sample values for bubble chart
-        var sampleValues1 = data.map(x => x.sample_values)[0];
+        var sampleValuesAll = data.map(x => x.sample_values)[0];
     
         // otuIds for bubble chart
-        var otuIds1 = data.map(x=>x.otu_ids)[0];
+        var otuIdsAll = data.map(x=>x.otu_ids)[0];
 
         // otuLabels for bubble chart
-        var otuLabels1 = data.map(x=>x.otu_labels)[0]
+        var otuLabelsAll = data.map(x=>x.otu_labels)[0]
 
 
         var washFreq = demoData.map(x=>x.wfreq)[0]
 
 
         buildBarChart(sampleValues, ylabels, otuLabels)
-        buildBubbleCharts(otuIds1, sampleValues1, sampleValues1, otuIds1, otuLabels1)
+        buildBubbleCharts(otuIdsAll, sampleValuesAll, sampleValuesAll, otuIdsAll, otuLabelsAll)
         demoInfo(demoData)
         gaugeChart(washFreq)
         
@@ -58,20 +58,23 @@ function optionChanged (id) {
 };
 
 // Function for drop down menu
-function init(){
-     var html = ""
-     d3.json(url).then(function(d){
-        d.names.map(function(each){
-            html += "<option value = "+each+" > "+each+"</option>"
+function init() {
+    d3.json(url).then(d => {
+        // Map test subject IDs to drop down options that can be selected by user
+        d.names.map(id => {
+            var dropDown = d3.select("#selDataset");
+            dropDown.append("option")
+            .attr("value", `${id}`)
+            .text(id)
         })
-        //  console.log(html);
-         document.getElementById("selDataset").innerHTML = html;
-         optionChanged(d.names[0]);
-     });
-    }
+        optionChanged(d.names[0])
+    })
+};
+
 
 // Function for bar chart
 function buildBarChart (xvalues, yvalues, textvalues) {
+    // Plot top 10 OTU IDs and Sample Values
     var trace = {
         x: xvalues,
         y: yvalues,
@@ -91,6 +94,8 @@ function buildBarChart (xvalues, yvalues, textvalues) {
 
 // Function for bubble chart
 function buildBubbleCharts (xvalues, yvalues, markerSize, markerColors, textValues) {
+    
+    // Plot all OTU IDs and Sample Values
     var trace = {
         x: xvalues,
         y: yvalues,
@@ -118,9 +123,12 @@ function buildBubbleCharts (xvalues, yvalues, markerSize, markerColors, textValu
 // Function for demographic info / metadata
 function demoInfo (filteredData) {
     var div = d3.select("#sample-metadata").html("")
+    
+    // Iterate through metadata, filtered by id, to find key and value
     filteredData.forEach(d => {
         Object.entries(d).forEach(([k,v]) => {
             var row = div.append("div")
+            // Metadata key and values are appended to divs under sample-metadata
             row.text(`${k}: ${v}`)
             console.log(k, v)
         })
@@ -134,6 +142,7 @@ function gaugeChart (value) {
         {
         type: "indicator",
         mode: "gauge+number",
+        // washFreq is passed as value to show number of scrubs per week
         value: value,
         title: { text: "Scrubs Per Week", font: { size: 16 } },
         delta: { reference: 400, increasing: { color: "RebeccaPurple" } },
